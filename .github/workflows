@@ -1,0 +1,26 @@
+name: Pipeline CI LogiExpress - Validacion de Estados (Grupo 7)
+
+on:
+  push:
+    branches: [ "principal", "main" ]
+  pull_request:
+    branches: [ "principal", "main" ]
+
+jobs:
+  test:
+    name: Ejecutar Pruebas Unitarias OO
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar codigo fuente
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Ejecutar pruebas unitarias con Maven y JUnit
+        run: mvn clean test
