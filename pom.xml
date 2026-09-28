@@ -1,0 +1,27 @@
+4.0.0
+    com.logiexpress
+    logiexpress-grupo7
+    1.0-SNAPSHOT
+    jar
+    
+    
+        UTF-8
+        17
+        17
+    
+
+    
+        
+            org.junit.jupiter
+            junit-jupiter
+            5.10.2
+            test
+        
+    
+
+    
+        
+            
+                org.apache.maven.plugins
+                maven-surefire-plugin
+                3.2.5
