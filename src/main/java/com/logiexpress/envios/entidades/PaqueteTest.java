@@ -23,7 +23,7 @@ public class PaqueteTest {
     @Test
     @DisplayName("CP-02: Flujo exitoso: CREADO -> ASIGNADO -> EN_CAMINO -> ENTREGADO")
     void testCicloDeVidaExitoso() {
-        paquete.asignarRepartidor();
+        paquete.asignarRepartidor(true); // Condición de guarda: True
         assertEquals(EstadoPaquete.ASIGNADO, paquete.getEstado());
 
         paquete.recolectarPaquete();
@@ -34,15 +34,15 @@ public class PaqueteTest {
     }
 
     @Test
-    @DisplayName("CP-03: Manejo de INCIDENCIA y vuelta a ruta")
+    @DisplayName("CP-03: Manejo de INCIDENCIA y vuelta a ruta usando resolverIncidencia()")
     void testFlujoIncidencia() {
-        paquete.asignarRepartidor();
+        paquete.asignarRepartidor(true);
         paquete.recolectarPaquete();
 
         paquete.reportarIncidencia();
         assertEquals(EstadoPaquete.INCIDENCIA, paquete.getEstado());
 
-        paquete.recolectarPaquete();
+        paquete.resolverIncidencia(); // Corregido según el evento del diagrama
         assertEquals(EstadoPaquete.EN_CAMINO, paquete.getEstado());
     }
 
@@ -52,5 +52,13 @@ public class PaqueteTest {
         assertThrows(IllegalStateException.class, () -> {
             paquete.confirmarEntrega();
         });
+    }
+
+    @Test
+    @DisplayName("CP-05: Condición de Guarda - No cambia a ASIGNADO si no hay repartidor disponible")
+    void testGuardaRepartidorNoDisponible() {
+        paquete.asignarRepartidor(false); // Condición de guarda: False
+        assertEquals(EstadoPaquete.CREADO, paquete.getEstado(), 
+            "Si no hay repartidor disponible, debe permanecer en CREADO.");
     }
 }
