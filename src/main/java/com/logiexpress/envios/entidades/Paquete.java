@@ -19,16 +19,21 @@ public class Paquete {
         return this.estado;
     }
 
-    public void asignarRepartidor() {
+    // Se agrega el parámetro para cumplir la condición de guarda [hay Repartidor Disponible]
+    public void asignarRepartidor(boolean hayRepartidorDisponible) {
         if (this.estado != EstadoPaquete.CREADO) {
             throw new IllegalStateException("Solo se puede asignar un paquete en estado CREADO.");
         }
-        this.estado = EstadoPaquete.ASIGNADO;
+        // Si no hay repartidor, el estado no cambia (se queda en CREADO)
+        if (hayRepartidorDisponible) {
+            this.estado = EstadoPaquete.ASIGNADO;
+            notificarRepartidor();
+        }
     }
 
     public void recolectarPaquete() {
-        if (this.estado != EstadoPaquete.ASIGNADO && this.estado != EstadoPaquete.INCIDENCIA) {
-            throw new IllegalStateException("Solo se puede recolectar desde ASIGNADO o resolviendo INCIDENCIA.");
+        if (this.estado != EstadoPaquete.ASIGNADO) {
+            throw new IllegalStateException("Solo se puede recolectar desde el estado ASIGNADO.");
         }
         this.estado = EstadoPaquete.EN_CAMINO;
     }
@@ -38,6 +43,15 @@ public class Paquete {
             throw new IllegalStateException("Solo se pueden reportar incidencias si está EN_CAMINO.");
         }
         this.estado = EstadoPaquete.INCIDENCIA;
+        notificarAdministrador();
+    }
+
+    // Se crea el método propio para la transición según el diagrama
+    public void resolverIncidencia() {
+        if (this.estado != EstadoPaquete.INCIDENCIA) {
+            throw new IllegalStateException("Solo se puede resolver una incidencia si el paquete está en estado INCIDENCIA.");
+        }
+        this.estado = EstadoPaquete.EN_CAMINO;
     }
 
     public void confirmarEntrega() {
@@ -45,5 +59,11 @@ public class Paquete {
             throw new IllegalStateException("Solo se puede entregar un paquete que esté EN_CAMINO.");
         }
         this.estado = EstadoPaquete.ENTREGADO;
+        notificarCliente();
     }
+
+    // Métodos para cumplir con las acciones de salida del diagrama ( / notificar... )
+    private void notificarRepartidor() { /* Lógica de notificación */ }
+    private void notificarAdministrador() { /* Lógica de notificación */ }
+    private void notificarCliente() { /* Lógica de notificación */ }
 }
